@@ -4,9 +4,9 @@ local dir
 local -A opts
 
 zmodload zsh/zutil
-zparseopts -D -E -F -K -M -A opts -- b: -base:=b
+zparseopts -D -E -F -K -M -A opts -- b: -base:=b d: -depth:=d
 
-target_dir="$1"
+target_dir="*$1*"
 
 # 引数の確認
 if [[ -z "$target_dir" ]]; then
@@ -28,10 +28,21 @@ if [[ ! -d "$base_path" ]]; then
     return 1
 fi
 
+# 深さが数値であることを確認
+if [[ -n "${opts[-d]}" ]]; then
+    if ! [[ "${opts[-d]}" =~ ^[0-9]+$ ]]; then
+        echo "Error: Depth must be a non-negative integer."
+        return 1
+    fi
+    depth="${opts[-d]}"
+else
+    depth=3
+fi
+
 echo "Searching for directory '$target_dir' in '$base_path'..."
 
 # 検索と移動
-dir=$(find "$base_path" -maxdepth 5 -type d -name "$target_dir" 2> /dev/null | fzf --height 40% --reverse --header="Search in: $base_path")
+dir=$(find "$base_path" -maxdepth "$depth" -type d -name "$target_dir" 2> /dev/null | fzf --height 40% --reverse --header="Search in: $base_path")
 
 if [[ -n "$dir" ]]; then
     cdls "$dir" || return 1
