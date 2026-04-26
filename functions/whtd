@@ -38,9 +38,9 @@ gh pr list --search "author:@me created:$TODAY" --state all --json title,body,ur
 echo "完了: $OUTPUT_FILE に書き出しました。"
 
 current_dir=$(pwd)
-cd "$OUTPUT_DIR"
+safe_cd "$OUTPUT_DIR" || return 1;
 
 # copilot cliを使用して、今日のPRの内容を要約
 copilot -p "$OUTPUT_FILE を読んで概要を理解してください。レビュワーとの会話や追加の対応等を踏まえて今日の活動を詳細かつ、過不足なく説明してください。長くなっても問題ありません。" --model gpt-4.1 --allow-tool 'shell(gh)' > "$SUMMARY_FILE"
-cd "$current_dir"
+safe_cd "$current_dir" || return 1;
 less "$SUMMARY_FILE"

@@ -1,2 +1,2 @@
-cd $1;
-tree -L 1 .;
+safe_cd $1 || return 1
+tree -L 1 .
