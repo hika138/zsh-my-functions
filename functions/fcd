@@ -1,0 +1,38 @@
+local base_path
+local target_dir
+local dir
+local -A opts
+
+zmodload zsh/zutil
+zparseopts -D -E -F -K -M -A opts -- b: -base:=b
+
+target_dir="$1"
+
+# 引数の確認
+if [[ -z "$target_dir" ]]; then
+    echo "Usage: fcd <target_directory> [-b <base_path>]"
+    return 1
+fi
+
+# base_path の決定と正規化
+if [[ -n "${opts[-b]}" ]]; then
+    # 入力されたパスを絶対パスに変換（チルダ展開も含む）
+    base_path="${opts[-b]:A}"
+else
+    base_path="$HOME"
+fi
+
+# ディレクトリの存在確認
+if [[ ! -d "$base_path" ]]; then
+    echo "Error: Directory '$base_path' does not exist."
+    return 1
+fi
+
+echo "Searching for directory '$target_dir' in '$base_path'..."
+
+# 検索と移動
+dir=$(find "$base_path" -maxdepth 5 -type d -name "$target_dir" 2> /dev/null | fzf --height 40% --reverse --header="Search in: $base_path")
+
+if [[ -n "$dir" ]]; then
+    cdls "$dir"
+fi

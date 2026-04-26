@@ -1,0 +1,24 @@
+# 1. リモートの情報を更新し、古い追跡枝を削除
+git fetch -p || { echo "Fetch failed"; return 1; }
+
+# 2. 'gone' 状態のブランチを特定（現在のブランチは除外）
+local target_branches
+target_branches=($(git branch -vv | awk '/: gone]/{if($1 != "*") print $1}'))
+
+# 3. 対象が空かチェック
+if [ ${#target_branches[@]} -eq 0 ]; then
+    echo "No gone branches to delete."
+    return 0
+fi
+
+# 4. 確認表示
+echo "The following local branches are 'gone' on remote and will be deleted:"
+printf "  %s\n" "${target_branches[@]}"
+
+# 5. 削除実行（-D は強制削除なので注意）
+read -p "Continue? (y/n): " confirm
+if [[ "$confirm" == [yY] ]]; then
+    git branch -D "${target_branches[@]}"
+else
+    echo "Aborted."
+fi
