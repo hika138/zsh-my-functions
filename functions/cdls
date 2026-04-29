@@ -1,7 +1,6 @@
 zmodload zsh/zutil
 zparseopts -D -E -K -M -A opts -- p
-
-$directory="$1"
+directory="$1"
 
 safe_cd "$directory" || return 1
 if (( ${+opts[-p]} )); then

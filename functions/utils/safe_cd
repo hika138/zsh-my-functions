@@ -1,17 +1,17 @@
-if [[ ! -e "$1" && -n "$1" ]]; then
+if [[ ! -e "$1" && $1 != "" ]]; then
     echo "Error: Directory '$1' does not exist." >&2
     return 1
 fi
 
-if [[ ! -d "$1" && -n "$1" ]]; then
+if [[ ! -d "$1" && $1 != "" ]]; then
     echo "Error: '$1' is not a directory." >&2
     return 1
 fi
 
-if [[ -n "$1" ]]; then
-    directory="$1"
-else
+if [[ $1 == "" ]]; then
     directory="$HOME"
+else
+    directory="$1"
 fi
 
 cd "$directory" || return 1
