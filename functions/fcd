@@ -45,5 +45,5 @@ echo "Searching for directory '$target_dir' in '$base_path'..."
 dir=$(find "$base_path" -maxdepth "$depth" -type d -name "$target_dir" 2> /dev/null | fzf --height 40% --reverse --header="Search in: $base_path")
 
 if [[ -n "$dir" ]]; then
-    cdls "$dir" || return 1
+    cdl "$dir" || return 1
 fi

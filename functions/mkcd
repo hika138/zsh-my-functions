@@ -1,2 +1,2 @@
 mkdir $1
-cdls $1 || return 1
+cdl $1 || return 1
