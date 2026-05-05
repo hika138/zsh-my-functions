@@ -1,0 +1,18 @@
+#!/usr/bin/env zsh
+# lst - show a shallow tree of current directory
+# Usage: lst [path]
+
+# If 'tree' is not available, fall back to 'ls -la'
+if ! command -v tree >/dev/null 2>&1; then
+  echo "tree: command not found. Falling back to 'ls -la'"
+  ls -la "$@"
+  return 0
+fi
+
+# run tree with human-readable sizes, show hidden files, depth 1
+# pass any provided path arguments
+if (( $# > 0 )); then
+  tree -La 1 "$@"
+else
+  tree -La 1 .
+fi
